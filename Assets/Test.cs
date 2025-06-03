@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public float speed = 0.01f;
+    public float maxSpeed = 3f;
     public float checkDistance = 0.55f;
     bool isGrounded = false;
     bool isFalling = false;
@@ -18,16 +18,8 @@ public class Test : MonoBehaviour
 
     void Update()
     {
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position += Time.deltaTime * speed * Vector3.right;
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position += Time.deltaTime * speed * Vector3.left;
-        }
+        float move = Input.GetAxisRaw("Horizontal"); // -1 = 왼쪽, 1 = 오른쪽, 0 = 정지
+        rb.velocity = new Vector2(maxSpeed * move, rb.velocity.y);
 
         if(!isGrounded && rb.velocity.y < 0) {
             isFalling = true;
