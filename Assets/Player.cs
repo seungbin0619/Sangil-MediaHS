@@ -11,26 +11,34 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
+    Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
         float move = Input.GetAxisRaw("Horizontal"); // -1 = 왼쪽, 1 = 오른쪽, 0 = 정지
-        spriteRenderer.flipX = (move == -1); // 왼쪽 보고있으면 좌우 반전
+
+        if(move != 0) {
+            spriteRenderer.flipX = move < 0; // 왼쪽 이동 시 스프라이트 반전
+        }
+
+        animator.SetBool("IsRunning", move != 0);
         
         rb.velocity = new Vector2(maxSpeed * move, rb.velocity.y);
 
-        if(!isGrounded && rb.velocity.y < 0) {
+        if(!isGrounded && rb.velocity.y <= 0) {
             isFalling = true;
         }
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, checkDistance, LayerMask.GetMask("Ground"));
         isGrounded = hit.collider != null;
+        animator.SetBool("IsGrounded", isGrounded);
 
         if (isGrounded && isFalling)
         {
@@ -38,6 +46,7 @@ public class Player : MonoBehaviour
             {
                 isFalling = false;
                 rb.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
+                animator.SetTrigger("Jump");
             }
         }
     }
