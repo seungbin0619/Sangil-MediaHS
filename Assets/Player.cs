@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     SpriteRenderer spriteRenderer;
     Animator animator;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -49,5 +49,9 @@ public class Player : MonoBehaviour
                 animator.SetTrigger("Jump");
             }
         }
+    }
+
+    public void Die() {
+        GameManager.instance.stages[GameManager.instance.currentStageIndex].Restart();
     }
 }
